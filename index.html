@@ -1,34 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ site.title }}</title>
-  <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #gameCanvas {
+            border: 2px solid #000;
+            background-color: #000;
+        }
+        @media (min-width: 768px) {
+            body {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>{{ site.title }}</h1>
-    <nav>
-      <a href="{{ "/about" | relative_url }}">About</a>
-      <a href="{{ "/contact" | relative_url }}">Contact</a>
-    </nav>
-  </header>
+    <canvas id="gameCanvas" width="300" height="300"></canvas>
 
-  <main>
-    <h2>Articles</h2>
-    <ul>
-      {% for post in site.posts %}
-        <li>
-          <a href="{{ post.url }}">{{ post.title }}</a>
-          <span>{{ post.date | date: "%B %d, %Y" }}</span>
-        </li>
-      {% endfor %}
-    </ul>
-  </main>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const cellSize = 10;
+        const directionMap = { 'ArrowUp': [-1, 0], 'ArrowDown': [1, 0], 'ArrowLeft': [0, -1], 'ArrowRight': [0, 1] };
+        let snake = [[0, 0]];
+        let direction = [0, 1];
+        let food = [Math.floor(Math.random() * 30), Math.floor(Math.random() * 30)];
+        let gameRunning = true;
 
-  <footer>
-    <p>&copy; {{ site.time | date: "%Y" }} {{ site.author.name }}</p>
-  </footer>
+        function draw() {
+            if (!gameRunning) return;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw food
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food[1] * cellSize, food[0] * cellSize, cellSize, cellSize);
+
+            // Draw snake
+            ctx.fillStyle = 'green';
+            snake.forEach(segment => {
+                ctx.fillRect(segment[1] * cellSize, segment[0] * cellSize, cellSize, cellSize);
+            });
+
+            // Move snake
+            const head = [snake[0][0] + direction[0], snake[0][1] + direction[1]];
+            if (head[0] < 0 || head[0] >= canvas.height / cellSize || head[1] < 0 || head[1] >= canvas.width / cellSize || snake.some(segment => segment[0] === head[0] && segment[1] === head[1])) {
+                gameRunning = false;
+                alert('Game Over!');
+                return;
+            }
+
+            snake.unshift(head);
+
+            // Check for food collision
+            if (head[0] === food[0] && head[1] === food[1]) {
+                food = [Math.floor(Math.random() * 30), Math.floor(Math.random() * 30)];
+            } else {
+                snake.pop();
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (directionMap[e.code]) {
+                const newDirection = directionMap[e.code];
+                if (newDirection[0] !== -direction[0] || newDirection[1] !== -direction[1]) {
+                    direction = newDirection;
+                }
+            }
+        });
+
+        draw();
+    </script>
 </body>
 </html>
