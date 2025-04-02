@@ -1,6 +1,20 @@
+title: urobolos的blog
+email: cffo05@outlook.com
+description: urobolos的自留地
+url: "https://xin114514.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+author:
+  name: urobolos
+  bio: "A brief description of yourself."
+  avatar: "/assets/images/avatar.jpg"
 
-title: My Personal Blog
-description: A blog about my thoughts and experiences.
-url: https://xin114514.github.io
-theme: minima  # 使用默认的minima主题
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
 
+# Collections
+collections:
+  messages:
+    output: true
+    permalink: /messages/:path
