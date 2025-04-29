@@ -1,91 +1,446 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>贪吃蛇游戏</title>
+    <title>Quantum | 批处理的博客</title>
+    <link rel="stylesheet" href="https://s2.ssl.qhres2.com/static/56662140ef7d5d03.css">
+    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+--primary: #00f0ff;
+--secondary: #7b2dff;
+--dark: #0a0a1a;
+--light: #f0f5ff;
+--accent: #ff2d7b;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
         }
-        #gameCanvas {
-            border: 2px solid #000;
-            background-color: #000;
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--secondary) 50%, var(--primary) 100%);
         }
-        @media (min-width: 768px) {
-            body {
-                display: none;
-            }
+        
+        .text-gradient {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+-webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 240, 255, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .glow {
+            filter: drop-shadow(0 0 8px var(--primary));
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid var(--primary);
+            white-space: nowrap;
+            letter-spacing: 0.15em;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary) }
         }
     </style>
 </head>
-<body>
-    <canvas id="gameCanvas" width="300" height="300"></canvas>
+<body class="min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-opacity-90 backdrop-blur-md bg-black fixed w-full z-50 border-b border-gray-800">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center glow">
+                        <i class="fas fa-atom text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gradient">QUANTUM</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <span class="text-gray-300 hover:text-white cursor-pointer transition">Home</span>
+                    <span class="text-gray-300 hover:text-white cursor-pointer transition">Articles</span>
+                    <span class="text-gray-300 hover:text-white cursor-pointer transition">Projects</span>
+                    <span class="text-gray-300 hover:text-white cursor-pointer transition">About</span>
+                </div>
+                <div class="md:hidden">
+                    <i class="fas fa-bars text-white text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero-gradient min-h-screen flex items-center pt-20">
+        <div class="container mx-auto px-6 py-20">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                        <span class="text-gradient">Exploring</span><br>
+                        <span class="typewriter">The Future of Tech</span>
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-8">
+                        前沿科技洞察 | 创新思维碰撞 | 数字未来探索
+                    </p>
+                    <div class="flex space-x-4">
+                        <button class="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-semibold hover:opacity-90 transition">
+                            Read Articles
+                        </button>
+                        <button class="px-8 py-3 border border-white text-white rounded-full font-semibold hover:bg-white hover:bg-opacity-10 transition">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative w-64 h-64 md:w-80 md:h-80 floating">
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 opacity-20 blur-xl"></div>
+                        <div class="absolute inset-4 rounded-full border-2 border-white border-opacity-10 flex items-center justify-center">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center glow">
+                                <i class="fas fa-microchip text-white text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center glow">
+                            <i class="fas fa-robot text-white"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center glow">
+                            <i class="fas fa-code text-white"></i>
+                        </div>
+                        <div class="absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center glow">
+                            <i class="fas fa-brain text-white"></i>
+                        </div>
+                        <div class="absolute top-1/2 left-0 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center glow">
+                            <i class="fas fa-rocket text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特色文章 -->
+    <section class="py-20 bg-black">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Featured <span class="text-gradient">Articles</span></h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                    精选科技前沿文章，探索数字世界的无限可能
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 文章卡片 1 -->
+                <div class="bg-gray-900 rounded-xl p-6 card-hover">
+                    <div class="mb-4">
+                        <span class="text-sm text-blue-400 font-semibold">AI & ML</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">量子计算如何重塑人工智能</h3>
+                    <p class="text-gray-400 mb-4">
+                        探索量子计算与人工智能的融合将如何彻底改变我们解决问题的范式...
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 mr-2"></div>
+                            <span class="text-sm text-gray-300">Dr. Zhang</span>
+                        </div>
+                        <span class="text-sm text-gray-500">2025-04-15</span>
+                    </div>
+                </div>
+                
+                <!-- 文章卡片 2 -->
+                <div class="bg-gray-900 rounded-xl p-6 card-hover">
+                    <div class="mb-4">
+                        <span class="text-sm text-purple-400 font-semibold">BLOCKCHAIN</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Web3.0时代的去中心化身份</h3>
+                    <p class="text-gray-400 mb-4">
+                        分析去中心化身份(DID)系统如何成为Web3.0基础设施的核心组件...
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 mr-2"></div>
+                            <span class="text-sm text-gray-300">Prof. Li</span>
+                        </div>
+                        <span class="text-sm text-gray-500">2025-04-10</span>
+                    </div>
+                </div>
+                
+                <!-- 文章卡片 3 -->
+                <div class="bg-gray-900 rounded-xl p-6 card-hover">
+                    <div class="mb-4">
+                        <span class="text-sm text-pink-400 font-semibold">NEUROSCIENCE</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">脑机接口的商业化路径</h3>
+                    <p class="text-gray-400 mb-4">
+                        从实验室到市场：脑机接口技术面临的挑战与突破性进展...
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-red-500 mr-2"></div>
+                            <span class="text-sm text-gray-300">Dr. Wang</span>
+                        </div>
+                        <span class="text-sm text-gray-500">2025-04-05</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="px-8 py-3 border border-gray-700 text-white rounded-full font-semibold hover:bg-white hover:bg-opacity-10 transition">
+                    View All Articles
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术趋势 -->
+    <section class="py-20 bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Tech <span class="text-gradient">Trends</span></h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                    可视化呈现当前最热门的科技趋势与发展方向
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-800">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-semibold">2025年技术成熟度曲线</h3>
+                            <div class="flex space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-blue-400">量子计算</span>
+                                    <span class="text-sm text-gray-400">Peak</span>
+                                </div>
+                                <div class="w-full bg-gray-800 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-purple-400">生成式AI</span>
+                                    <span class="text-sm text-gray-400">Plateau</span>
+                                </div>
+                                <div class="w-full bg-gray-800 rounded-full h-2">
+                                    <div class="bg-purple-500 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-pink-400">脑机接口</span>
+                                    <span class="text-sm text-gray-400">Slope</span>
+                                </div>
+                                <div class="w-full bg-gray-800 rounded-full h-2">
+                                    <div class="bg-pink-500 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-green-400">6G网络</span>
+                                    <span class="text-sm text-gray-400">Trough</span>
+                                </div>
+                                <div class="w-full bg-gray-800 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 30%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-gray-900 rounded-xl p-8 border border-gray-800">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-semibold">技术领域投资热度</h3>
+                            <div class="text-sm text-gray-400">2025 Q1</div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <div class="text-blue-400 text-3xl font-bold mb-2">$42B</div>
+                                <div class="text-sm text-gray-400">人工智能</div>
+                            </div>
+                            
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <div class="text-purple-400 text-3xl font-bold mb-2">$18B</div>
+                                <div class="text-sm text-gray-400">量子科技</div>
+                            </div>
+                            
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <div class="text-pink-400 text-3xl font-bold mb-2">$12B</div>
+                                <div class="text-sm text-gray-400">生物科技</div>
+                            </div>
+                            
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <div class="text-green-400 text-3xl font-bold mb-2">$9B</div>
+                                <div class="text-sm text-gray-400">清洁能源</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 订阅区域 -->
+    <section class="py-20 bg-black">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-10 border border-gray-800">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Stay <span class="text-gradient">Updated</span></h2>
+                    <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+                        订阅我们的通讯，获取最新的科技洞察与独家内容
+                    </p>
+                    
+                    <div class="flex flex-col md:flex-row gap-4 max-w-xl mx-auto">
+                        <input type="email" placeholder="Your email address" class="flex-grow px-6 py-3 bg-gray-800 border border-gray-700 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button class="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-semibold hover:opacity-90 transition whitespace-nowrap">
+                            Subscribe Now
+                        </button>
+                    </div>
+                    
+                    <p class="text-sm text-gray-500 mt-4">
+                        We respect your privacy. Unsubscribe at any time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-atom text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold text-gradient">QUANTUM</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        探索科技前沿，洞察数字未来
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Explore</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">Home</span></li>
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">Articles</span></li>
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">Projects</span></li>
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">About</span></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Categories</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">Artificial Intelligence</span></li>
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">Quantum Computing</span></li>
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">Blockchain</span></li>
+                        <li><span class="text-gray-400 hover:text-white cursor-pointer transition">Neuroscience</span></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white cursor-pointer transition">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white cursor-pointer transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white cursor-pointer transition">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white cursor-pointer transition">
+                            <i class="fab fa-medium"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                    © 2025 Quantum Blog. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <span class="text-gray-500 hover:text-white cursor-pointer text-sm transition">Privacy Policy</span>
+                    <span class="text-gray-500 hover:text-white cursor-pointer text-sm transition">Terms of Service</span>
+                    <span class="text-gray-500 hover:text-white cursor-pointer text-sm transition">Contact</span>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const cellSize = 10;
-        const directionMap = { 'ArrowUp': [-1, 0], 'ArrowDown': [1, 0], 'ArrowLeft': [0, -1], 'ArrowRight': [0, 1] };
-        let snake = [[0, 0]];
-        let direction = [0, 1];
-        let food = [Math.floor(Math.random() * 30), Math.floor(Math.random() * 30)];
-        let gameRunning = true;
-
-        function draw() {
-            if (!gameRunning) return;
-
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw food
-            ctx.fillStyle = 'red';
-            ctx.fillRect(food[1] * cellSize, food[0] * cellSize, cellSize, cellSize);
-
-            // Draw snake
-            ctx.fillStyle = 'green';
-            snake.forEach(segment => {
-                ctx.fillRect(segment[1] * cellSize, segment[0] * cellSize, cellSize, cellSize);
+        // 简单的滚动动画
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card-hover');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.classList.add('shadow-lg');
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.classList.remove('shadow-lg');
+                });
             });
-
-            // Move snake
-            const head = [snake[0][0] + direction[0], snake[0][1] + direction[1]];
-            if (head[0] < 0 || head[0] >= canvas.height / cellSize || head[1] < 0 || head[1] >= canvas.width / cellSize || snake.some(segment => segment[0] === head[0] && segment[1] === head[1])) {
-                gameRunning = false;
-                alert('Game Over!');
-                return;
-            }
-
-            snake.unshift(head);
-
-            // Check for food collision
-            if (head[0] === food[0] && head[1] === food[1]) {
-                food = [Math.floor(Math.random() * 30), Math.floor(Math.random() * 30)];
-            } else {
-                snake.pop();
-            }
-
-            requestAnimationFrame(draw);
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (directionMap[e.code]) {
-                const newDirection = directionMap[e.code];
-                if (newDirection[0] !== -direction[0] || newDirection[1] !== -direction[1]) {
-                    direction = newDirection;
-                }
-            }
+            
+            // 页面加载动画
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
         });
-
-        draw();
+        
+        // 页面加载时设置透明度为0，然后淡入
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.5s ease-in-out';
     </script>
 </body>
 </html>
